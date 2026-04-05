@@ -11,20 +11,25 @@ from app.tools.search import web_search
 # web_search
 # ---------------------------------------------------------------------------
 
-_FAKE_RESULTS = [
-    {"title": "LangGraph overview", "href": "https://example.com/langgraph", "body": "LangGraph is a library for building stateful agents."},
-    {"title": "Agent frameworks", "href": "https://example.com/agents", "body": "Multi-agent frameworks enable complex task decomposition."},
-]
+_FAKE_TAVILY_RESPONSE = {
+    "results": [
+        {"title": "LangGraph overview", "url": "https://example.com/langgraph", "content": "LangGraph is a library for building stateful agents."},
+        {"title": "Agent frameworks", "url": "https://example.com/agents", "content": "Multi-agent frameworks enable complex task decomposition."},
+    ]
+}
 
 
 @pytest.mark.asyncio
-async def test_web_search_returns_results():
-    mock_ddgs = MagicMock()
-    mock_ddgs.__enter__ = MagicMock(return_value=mock_ddgs)
-    mock_ddgs.__exit__ = MagicMock(return_value=False)
-    mock_ddgs.text = MagicMock(return_value=_FAKE_RESULTS)
+async def test_web_search_returns_results(monkeypatch):
+    monkeypatch.setenv("TAVILY_API_KEY", "tvly-test-key")
+    # Reload settings so the env var is picked up
+    import app.config as cfg
+    cfg.settings.TAVILY_API_KEY = "tvly-test-key"
 
-    with patch("app.tools.search.DDGS", return_value=mock_ddgs):
+    mock_client = MagicMock()
+    mock_client.search.return_value = _FAKE_TAVILY_RESPONSE
+
+    with patch("app.tools.search.TavilyClient", return_value=mock_client):
         results = await web_search("LangGraph", max_results=4)
 
     assert isinstance(results, list)
@@ -35,14 +40,24 @@ async def test_web_search_returns_results():
 
 
 @pytest.mark.asyncio
-async def test_web_search_returns_empty_on_error():
-    mock_ddgs = MagicMock()
-    mock_ddgs.__enter__ = MagicMock(side_effect=Exception("network error"))
-    mock_ddgs.__exit__ = MagicMock(return_value=False)
+async def test_web_search_returns_empty_on_error(monkeypatch):
+    import app.config as cfg
+    cfg.settings.TAVILY_API_KEY = "tvly-test-key"
 
-    with patch("app.tools.search.DDGS", return_value=mock_ddgs):
+    mock_client = MagicMock()
+    mock_client.search.side_effect = Exception("network error")
+
+    with patch("app.tools.search.TavilyClient", return_value=mock_client):
         results = await web_search("anything", max_results=4)
 
+    assert results == []
+
+
+@pytest.mark.asyncio
+async def test_web_search_returns_empty_without_key(monkeypatch):
+    import app.config as cfg
+    cfg.settings.TAVILY_API_KEY = ""
+    results = await web_search("anything")
     assert results == []
 
 
