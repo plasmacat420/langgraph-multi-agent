@@ -23,7 +23,7 @@ A single AI agent is like a generalist contractor — it can do a little of ever
 
 > **Note:** The demo frontend requires a running backend with a valid `GROQ_API_KEY`. Point `VITE_API_URL` at your backend or run it locally with Docker Compose.
 >
-> Backend API (Render): https://langgraph-multi-agent-api.onrender.com
+> Backend API (Render): https://langgraph-multi-agent.onrender.com
 
 ---
 
