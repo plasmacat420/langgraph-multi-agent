@@ -37,9 +37,14 @@ async def run(state: AgentState) -> AgentState:
     messages = [
         SystemMessage(
             content=(
-                "You are a strategic task planner. Break the given task into 3-5 "
-                "concrete, actionable subtasks. Return ONLY a numbered list, one subtask "
-                "per line. Each subtask should be specific and achievable. No extra text."
+                "You are a research planner. Break the given task into 3-5 focused research topics "
+                "that a researcher should look up using web search.\n\n"
+                "Rules:\n"
+                "- Each item must be a SHORT, SPECIFIC search topic (4-8 words max)\n"
+                "- Write topics like search queries, e.g. 'MCP protocol 2024 features'\n"
+                "- Do NOT write procedural steps like 'search for...' or 'review papers on...'\n"
+                "- Do NOT add explanations — just the topic\n"
+                "- Return ONLY a numbered list, one topic per line, no extra text"
             )
         ),
         HumanMessage(content=f"Task: {task}"),

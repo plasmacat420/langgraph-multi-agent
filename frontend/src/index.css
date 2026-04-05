@@ -22,15 +22,51 @@
     @apply text-slate-200;
   }
   .prose-dark h1, .prose-dark h2, .prose-dark h3 {
-    @apply text-white font-bold;
+    @apply text-white font-bold mt-4 mb-2;
   }
+  .prose-dark h1 { @apply text-lg; }
+  .prose-dark h2 { @apply text-base; }
+  .prose-dark p  { @apply mb-3 leading-relaxed; }
+  .prose-dark ul, .prose-dark ol { @apply mb-3 pl-5; }
+  .prose-dark li { @apply mb-1; }
+  .prose-dark ul { @apply list-disc; }
+  .prose-dark ol { @apply list-decimal; }
   .prose-dark code {
-    @apply bg-slate-800 px-1 rounded text-green-400;
+    @apply bg-slate-800 px-1 rounded text-green-400 text-xs;
   }
   .prose-dark pre {
-    @apply bg-slate-800 p-3 rounded;
+    @apply bg-slate-800 p-3 rounded mb-3 overflow-x-auto;
   }
   .prose-dark a {
     @apply text-blue-400 underline;
   }
+  .prose-dark strong { @apply text-white; }
+}
+
+/* Event card entrance animation */
+@keyframes eventIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.event-enter {
+  animation: eventIn 0.25s ease-out forwards;
+}
+
+/* Typing cursor for thought bubbles */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.typing-cursor::after {
+  content: "▋";
+  @apply text-slate-500 text-xs ml-0.5;
+  animation: blink 1s step-start infinite;
 }

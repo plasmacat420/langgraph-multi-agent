@@ -49,24 +49,30 @@ export default function AgentCard({ event }) {
   const icon = TYPE_ICONS[event.type] || "•";
 
   if (event.type === "thought") {
-    return <ThoughtBubble content={event.content} timestamp={event.timestamp} />;
+    return (
+      <div className="event-enter">
+        <ThoughtBubble content={event.content} timestamp={event.timestamp} />
+      </div>
+    );
   }
 
   if (event.type === "tool_call") {
     return (
-      <ToolCallCard
-        tool={event.tool}
-        input={event.input}
-        output={event.output}
-        timestamp={event.timestamp}
-      />
+      <div className="event-enter">
+        <ToolCallCard
+          tool={event.tool}
+          input={event.input}
+          output={event.output}
+          timestamp={event.timestamp}
+        />
+      </div>
     );
   }
 
   const isLong = event.content && event.content.length > 300;
 
   return (
-    <div className={`border rounded-lg overflow-hidden ${style.bg}`}>
+    <div className={`event-enter border rounded-lg overflow-hidden ${style.bg}`}>
       <div className="flex items-center gap-2 px-3 py-2">
         <span className={`w-2 h-2 rounded-full ${style.dot}`} />
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${style.badge}`}>
