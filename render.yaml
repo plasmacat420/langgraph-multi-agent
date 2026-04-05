@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: langgraph-multi-agent-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -e "."
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: '["https://plasmacat420.github.io"]'
+      - key: MAX_ITERATIONS
+        value: "10"
+    healthCheckPath: /health

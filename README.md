@@ -22,6 +22,8 @@ A single AI agent is like a generalist contractor — it can do a little of ever
 [https://plasmacat420.github.io/langgraph-multi-agent](https://plasmacat420.github.io/langgraph-multi-agent)
 
 > **Note:** The demo frontend requires a running backend with a valid `OPENAI_API_KEY`. Point `VITE_API_URL` at your backend or run it locally with Docker Compose.
+>
+> Backend API (Render): https://langgraph-multi-agent-api.onrender.com
 
 ---
 
