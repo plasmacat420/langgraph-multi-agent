@@ -1,8 +1,6 @@
 services:
   - type: web
     name: langgraph-multi-agent-api
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
     envVars:
       - key: GROQ_API_KEY
         sync: false
