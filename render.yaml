@@ -6,6 +6,8 @@ services:
         sync: false
       - key: GROQ_MODEL
         value: llama-3.3-70b-versatile
+      - key: TAVILY_API_KEY
+        sync: false
       - key: CORS_ORIGINS
         value: '["https://plasmacat420.github.io"]'
       - key: MAX_ITERATIONS
