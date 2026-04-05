@@ -3,7 +3,16 @@
     "allow": [
       "Bash(ruff check:*)",
       "Bash(ruff format:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(gh repo:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(gh secret:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh run:*)",
+      "Bash(sed:*)",
+      "Bash(pip install:*)"
     ]
   }
 }

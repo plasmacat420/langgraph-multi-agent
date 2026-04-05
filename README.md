@@ -21,7 +21,7 @@ A single AI agent is like a generalist contractor — it can do a little of ever
 
 [https://plasmacat420.github.io/langgraph-multi-agent](https://plasmacat420.github.io/langgraph-multi-agent)
 
-> **Note:** The demo frontend requires a running backend with a valid `OPENAI_API_KEY`. Point `VITE_API_URL` at your backend or run it locally with Docker Compose.
+> **Note:** The demo frontend requires a running backend with a valid `GROQ_API_KEY`. Point `VITE_API_URL` at your backend or run it locally with Docker Compose.
 >
 > Backend API (Render): https://langgraph-multi-agent-api.onrender.com
 
@@ -71,7 +71,7 @@ cd langgraph-multi-agent
 
 # 2. Configure
 cp backend/.env.example backend/.env
-# Edit backend/.env and set OPENAI_API_KEY=sk-...
+# Edit backend/.env and set GROQ_API_KEY=sk-...
 
 # 3. Run
 docker-compose up --build
@@ -92,7 +92,7 @@ cd backend
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-cp .env.example .env               # add your OPENAI_API_KEY
+cp .env.example .env               # add your GROQ_API_KEY
 uvicorn app.main:app --reload --port 8000
 ```
 

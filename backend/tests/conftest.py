@@ -3,7 +3,7 @@ import os
 import pytest
 
 # Set dummy key so pydantic-settings doesn't complain
-os.environ.setdefault("OPENAI_API_KEY", "sk-test-dummy-key")
+os.environ.setdefault("GROQ_API_KEY", "gsk-test-dummy-key")
 
 
 @pytest.fixture

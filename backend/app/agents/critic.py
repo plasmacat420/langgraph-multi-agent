@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 
 from app.agents.state import AgentState
 from app.config import settings
@@ -29,9 +29,9 @@ async def run(state: AgentState) -> AgentState:
         }
     ]
 
-    llm = ChatOpenAI(
-        model="gpt-4o",
-        api_key=settings.OPENAI_API_KEY,
+    llm = ChatGroq(
+        model=settings.GROQ_MODEL,
+        api_key=settings.GROQ_API_KEY,
         temperature=0.2,
     )
 

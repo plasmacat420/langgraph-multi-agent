@@ -15,7 +15,7 @@ from app.agents.graph import build_graph, should_revise
 async def test_planner_returns_plan(sample_state):
     mock_response = AIMessage(content="1. Research topic\n2. Analyze data\n3. Write summary")
 
-    with patch("app.agents.planner.ChatOpenAI") as MockLLM:
+    with patch("app.agents.planner.ChatGroq") as MockLLM:
         instance = MockLLM.return_value
         instance.ainvoke = AsyncMock(return_value=mock_response)
 
@@ -41,7 +41,7 @@ async def test_researcher_calls_search(sample_state):
 
     with (
         patch("app.agents.researcher.web_search", AsyncMock(return_value=mock_search_results)),
-        patch("app.agents.researcher.ChatOpenAI") as MockLLM,
+        patch("app.agents.researcher.ChatGroq") as MockLLM,
     ):
         instance = MockLLM.return_value
         instance.ainvoke = AsyncMock(return_value=mock_synthesis)
@@ -64,7 +64,7 @@ async def test_researcher_calls_search(sample_state):
 async def test_executor_produces_draft(sample_state):
     mock_response = AIMessage(content="# AI Trends Report\n\nAI is transforming industries...")
 
-    with patch("app.agents.executor.ChatOpenAI") as MockLLM:
+    with patch("app.agents.executor.ChatGroq") as MockLLM:
         instance = MockLLM.return_value
         instance.ainvoke = AsyncMock(return_value=mock_response)
 
@@ -83,7 +83,7 @@ async def test_executor_runs_code_for_code_tasks(sample_state):
     mock_response = AIMessage(content=code_draft)
 
     with (
-        patch("app.agents.executor.ChatOpenAI") as MockLLM,
+        patch("app.agents.executor.ChatGroq") as MockLLM,
         patch("app.agents.executor.execute_python") as mock_exec,
     ):
         instance = MockLLM.return_value
@@ -107,7 +107,7 @@ async def test_critic_approves(sample_state):
     sample_state["draft"] = "A detailed and comprehensive report on AI trends..."
     mock_response = AIMessage(content="APPROVED: The draft thoroughly addresses the task.")
 
-    with patch("app.agents.critic.ChatOpenAI") as MockLLM:
+    with patch("app.agents.critic.ChatGroq") as MockLLM:
         instance = MockLLM.return_value
         instance.ainvoke = AsyncMock(return_value=mock_response)
 
@@ -123,7 +123,7 @@ async def test_critic_requests_revision(sample_state):
     sample_state["draft"] = "Short draft."
     mock_response = AIMessage(content="REVISE: The draft lacks depth. Add more examples.")
 
-    with patch("app.agents.critic.ChatOpenAI") as MockLLM:
+    with patch("app.agents.critic.ChatGroq") as MockLLM:
         instance = MockLLM.return_value
         instance.ainvoke = AsyncMock(return_value=mock_response)
 
@@ -168,11 +168,11 @@ async def test_graph_runs_end_to_end():
     search_results = [{"title": "AI", "url": "https://example.com", "snippet": "AI info"}]
 
     with (
-        patch("app.agents.planner.ChatOpenAI") as MockPlannerLLM,
+        patch("app.agents.planner.ChatGroq") as MockPlannerLLM,
         patch("app.agents.researcher.web_search", AsyncMock(return_value=search_results)),
-        patch("app.agents.researcher.ChatOpenAI") as MockResearcherLLM,
-        patch("app.agents.executor.ChatOpenAI") as MockExecutorLLM,
-        patch("app.agents.critic.ChatOpenAI") as MockCriticLLM,
+        patch("app.agents.researcher.ChatGroq") as MockResearcherLLM,
+        patch("app.agents.executor.ChatGroq") as MockExecutorLLM,
+        patch("app.agents.critic.ChatGroq") as MockCriticLLM,
     ):
         MockPlannerLLM.return_value.ainvoke = AsyncMock(return_value=plan_msg)
         MockResearcherLLM.return_value.ainvoke = AsyncMock(return_value=synthesis_msg)
