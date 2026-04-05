@@ -2,71 +2,131 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-slate-950 text-slate-100 font-mono;
-  }
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-slate-900;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-slate-600 rounded;
-  }
+/* ── Custom properties ──────────────────────────────────────────── */
+:root {
+  --c-planner:    168 85  247;   /* purple-500  */
+  --c-researcher: 59  130 246;   /* blue-500    */
+  --c-executor:   16  185 129;   /* emerald-500 */
+  --c-critic:     245 158 11;    /* amber-500   */
 }
 
+/* ── Base ───────────────────────────────────────────────────────── */
+@layer base {
+  html { height: 100%; }
+
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans antialiased;
+    min-height: 100%;
+    background-image:
+      radial-gradient(ellipse 90% 60% at 5%  0%,   rgba(124,58,237,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 95% 100%,  rgba(6,182,212,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%,   rgba(16,185,129,0.04) 0%, transparent 70%);
+    /* Dot-grid texture */
+    background-image:
+      radial-gradient(ellipse 90% 60% at 5%  0%,   rgba(124,58,237,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 95% 100%,  rgba(6,182,212,0.07) 0%, transparent 60%),
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 1px, transparent 0);
+    background-size: auto, auto, 28px 28px;
+    background-attachment: fixed, fixed, fixed;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar       { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-slate-700 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-600; }
+}
+
+/* ── Glassmorphism ──────────────────────────────────────────────── */
+@layer components {
+  .glass {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+  }
+
+  .glass-dark {
+    background: rgba(8, 15, 30, 0.7);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  /* Per-agent accent glow on cards */
+  .agent-card-planner    { border-left: 2px solid rgb(var(--c-planner)); }
+  .agent-card-researcher { border-left: 2px solid rgb(var(--c-researcher)); }
+  .agent-card-executor   { border-left: 2px solid rgb(var(--c-executor)); }
+  .agent-card-critic     { border-left: 2px solid rgb(var(--c-critic)); }
+  .agent-card-system     { border-left: 2px solid rgb(239 68 68); }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #c084fc 0%, #818cf8 40%, #38bdf8 100%);
+  }
+
+  /* Active agent glow wrapper */
+  .timeline-glow-planner    { box-shadow: 0 0 40px -10px rgba(var(--c-planner),    0.25); }
+  .timeline-glow-researcher { box-shadow: 0 0 40px -10px rgba(var(--c-researcher), 0.25); }
+  .timeline-glow-executor   { box-shadow: 0 0 40px -10px rgba(var(--c-executor),   0.25); }
+  .timeline-glow-critic     { box-shadow: 0 0 40px -10px rgba(var(--c-critic),     0.25); }
+}
+
+/* ── Utilities ──────────────────────────────────────────────────── */
 @layer utilities {
-  .prose-dark {
-    @apply text-slate-200;
+  /* Event entrance */
+  .event-enter { animation: eventIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  @keyframes eventIn {
+    from { opacity: 0; transform: translateY(10px); filter: blur(3px); }
+    to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
   }
-  .prose-dark h1, .prose-dark h2, .prose-dark h3 {
-    @apply text-white font-bold mt-4 mb-2;
+
+  /* Typing cursor */
+  .typing-cursor::after {
+    content: "▋";
+    color: rgb(100 116 139);
+    font-size: 0.65em;
+    margin-left: 2px;
+    animation: blink 1.1s step-start infinite;
   }
-  .prose-dark h1 { @apply text-lg; }
-  .prose-dark h2 { @apply text-base; }
-  .prose-dark p  { @apply mb-3 leading-relaxed; }
-  .prose-dark ul, .prose-dark ol { @apply mb-3 pl-5; }
-  .prose-dark li { @apply mb-1; }
-  .prose-dark ul { @apply list-disc; }
-  .prose-dark ol { @apply list-decimal; }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* Shimmer loading skeleton */
+  .shimmer-text {
+    background: linear-gradient(90deg, rgb(30 41 59) 25%, rgb(51 65 85) 50%, rgb(30 41 59) 75%);
+    background-size: 200% auto;
+    animation: shimmer 1.5s linear infinite;
+    @apply rounded;
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+
+  /* Prose for markdown output */
+  .prose-dark { @apply text-slate-200 leading-relaxed; }
+  .prose-dark h1 { @apply text-white text-xl font-bold mt-5 mb-3; }
+  .prose-dark h2 { @apply text-white text-base font-semibold mt-4 mb-2; }
+  .prose-dark h3 { @apply text-slate-100 text-sm font-semibold mt-3 mb-1.5; }
+  .prose-dark p  { @apply mb-3 text-slate-300; }
+  .prose-dark ul { @apply list-disc pl-5 mb-3 space-y-1; }
+  .prose-dark ol { @apply list-decimal pl-5 mb-3 space-y-1; }
+  .prose-dark li { @apply text-slate-300; }
+  .prose-dark strong { @apply text-white font-semibold; }
+  .prose-dark a  { @apply text-blue-400 underline underline-offset-2 hover:text-blue-300; }
   .prose-dark code {
-    @apply bg-slate-800 px-1 rounded text-green-400 text-xs;
+    @apply bg-slate-800 text-emerald-400 text-xs px-1.5 py-0.5 rounded font-mono;
   }
   .prose-dark pre {
-    @apply bg-slate-800 p-3 rounded mb-3 overflow-x-auto;
+    @apply bg-slate-800/80 border border-slate-700/50 rounded-lg p-4 overflow-x-auto mb-4;
   }
-  .prose-dark a {
-    @apply text-blue-400 underline;
+  .prose-dark pre code { @apply bg-transparent p-0; }
+  .prose-dark blockquote {
+    @apply border-l-2 border-slate-600 pl-4 italic text-slate-400 my-3;
   }
-  .prose-dark strong { @apply text-white; }
-}
-
-/* Event card entrance animation */
-@keyframes eventIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.event-enter {
-  animation: eventIn 0.25s ease-out forwards;
-}
-
-/* Typing cursor for thought bubbles */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-
-.typing-cursor::after {
-  content: "▋";
-  @apply text-slate-500 text-xs ml-0.5;
-  animation: blink 1s step-start infinite;
+  .prose-dark hr { @apply border-slate-700 my-4; }
 }

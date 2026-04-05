@@ -1,12 +1,16 @@
 export default function ThoughtBubble({ content, timestamp }) {
   return (
-    <div className="relative ml-2 pl-4 border-l-2 border-slate-700">
-      <div className="bg-slate-900/60 rounded-lg px-3 py-2">
-        <p className="text-slate-400 text-xs italic leading-relaxed">
-          💭 <span>{content}</span>
+    <div className="event-enter flex gap-3 py-1">
+      <div className="shrink-0 w-5 h-5 mt-0.5 rounded-full bg-slate-800/80 border border-slate-700/50
+        flex items-center justify-center text-[10px]">
+        💭
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-slate-500 text-xs italic leading-relaxed">
+          {content}
         </p>
         {timestamp && (
-          <p className="text-slate-600 text-xs mt-1">
+          <p className="text-slate-700 text-[10px] font-mono mt-1">
             {new Date(timestamp).toLocaleTimeString()}
           </p>
         )}

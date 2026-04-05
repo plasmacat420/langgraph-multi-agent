@@ -1,19 +1,11 @@
 import { useState } from "react";
 
 const EXAMPLES = [
-  "Research the latest developments in MCP protocol and write a summary",
-  "Write a Python script that calculates compound interest and explain how it works",
-  "Compare LangGraph vs CrewAI for building multi-agent systems",
-  "Research voice AI trends and analyze the key players",
+  { label: "MCP Protocol",     task: "Research the latest developments in MCP protocol and write a detailed summary" },
+  { label: "Python Script",    task: "Write a Python script that calculates compound interest and explain how it works" },
+  { label: "LangGraph vs CrewAI", task: "Compare LangGraph vs CrewAI for building multi-agent AI systems" },
+  { label: "Voice AI Trends",  task: "Research the latest trends in voice AI and analyze the key players" },
 ];
-
-const STATUS_STYLES = {
-  pending: "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30",
-  running: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
-  complete: "bg-green-500/20 text-green-400 border border-green-500/30",
-  failed: "bg-red-500/20 text-red-400 border border-red-500/30",
-  streaming: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
-};
 
 export default function TaskInput({ onSubmit, submitting, streamStatus }) {
   const [text, setText] = useState("");
@@ -29,52 +21,81 @@ export default function TaskInput({ onSubmit, submitting, streamStatus }) {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-bold text-white">LangGraph Multi-Agent</h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Planner → Researcher → Executor → Critic
-        </p>
+      {/* Brand mark */}
+      <div className="space-y-0.5">
+        <p className="text-slate-200 font-semibold text-sm">New Task</p>
+        <p className="text-slate-600 text-xs">Describe what you want the agents to research or build.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Describe a complex task for the agents to complete…"
-          rows={4}
-          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSubmit(e);
-          }}
-        />
-        <div className="flex items-center gap-3">
-          <button
-            type="submit"
-            disabled={isRunning || !text.trim()}
-            className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
-          >
-            {isRunning ? "Running…" : "Run Task"}
-          </button>
-          {streamStatus && streamStatus !== "idle" && (
-            <span className={`text-xs px-2 py-1 rounded-full ${STATUS_STYLES[streamStatus] || ""}`}>
-              {streamStatus}
-            </span>
-          )}
+      {/* Input form */}
+      <form onSubmit={handleSubmit} className="space-y-2.5">
+        <div className={`relative rounded-xl transition-all duration-300 ${isRunning ? "opacity-60" : ""}`}>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="e.g. Research the latest AI agent frameworks and write a comparison report…"
+            rows={5}
+            className="w-full glass rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600
+              focus:outline-none focus:ring-1 focus:ring-violet-500/50 focus:border-violet-500/30
+              resize-none leading-relaxed transition-all duration-200"
+            onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSubmit(e); }}
+          />
         </div>
-        <p className="text-slate-600 text-xs">Ctrl+Enter to submit</p>
+
+        <button
+          type="submit"
+          disabled={isRunning || !text.trim()}
+          className="relative w-full py-2.5 rounded-xl font-medium text-sm transition-all duration-200
+            disabled:opacity-40 disabled:cursor-not-allowed overflow-hidden group
+            bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500
+            text-white shadow-lg shadow-violet-900/30 hover:shadow-violet-800/40"
+        >
+          <span className="relative z-10 flex items-center justify-center gap-2">
+            {isRunning ? (
+              <>
+                <span className="flex gap-1">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className="w-1 h-1 bg-white rounded-full"
+                      style={{ animation: `dotBounce 1.4s ease-in-out ${i * 0.16}s infinite` }}
+                    />
+                  ))}
+                </span>
+                Running agents…
+              </>
+            ) : (
+              <>
+                <span>⚡</span> Run Task
+              </>
+            )}
+          </span>
+        </button>
+
+        <p className="text-center text-slate-700 text-[10px]">
+          ⌘ Enter to submit
+        </p>
       </form>
 
-      <div>
-        <p className="text-slate-500 text-xs mb-2 uppercase tracking-wider">Example tasks</p>
-        <div className="space-y-1.5">
+      {/* Example tasks */}
+      <div className="space-y-2">
+        <p className="text-slate-600 text-[10px] uppercase tracking-widest font-medium">
+          Try an example
+        </p>
+        <div className="grid grid-cols-2 gap-1.5">
           {EXAMPLES.map((ex) => (
             <button
-              key={ex}
-              onClick={() => setText(ex)}
+              key={ex.label}
+              onClick={() => setText(ex.task)}
               disabled={isRunning}
-              className="w-full text-left text-xs text-slate-400 hover:text-slate-200 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 rounded px-3 py-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="text-left text-xs text-slate-400 hover:text-slate-200
+                glass rounded-lg px-3 py-2.5 transition-all duration-200
+                hover:bg-white/[0.06] hover:border-white/[0.1]
+                disabled:opacity-40 disabled:cursor-not-allowed
+                border border-white/[0.04]"
             >
-              {ex}
+              <span className="font-medium text-slate-300 block mb-0.5">{ex.label}</span>
+              <span className="text-slate-600 text-[10px] leading-snug line-clamp-2">{ex.task}</span>
             </button>
           ))}
         </div>
