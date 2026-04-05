@@ -1,8 +1,7 @@
 import os
+from unittest.mock import MagicMock, patch
 
-import httpx
 import pytest
-import respx
 
 from app.tools.code_executor import execute_python
 from app.tools.file_writer import write_output
@@ -12,38 +11,36 @@ from app.tools.search import web_search
 # web_search
 # ---------------------------------------------------------------------------
 
+_FAKE_RESULTS = [
+    {"title": "LangGraph overview", "href": "https://example.com/langgraph", "body": "LangGraph is a library for building stateful agents."},
+    {"title": "Agent frameworks", "href": "https://example.com/agents", "body": "Multi-agent frameworks enable complex task decomposition."},
+]
+
 
 @pytest.mark.asyncio
 async def test_web_search_returns_results():
-    mock_payload = {
-        "AbstractText": "DuckDuckGo is a privacy-focused search engine.",
-        "AbstractURL": "https://duckduckgo.com",
-        "Heading": "DuckDuckGo",
-        "RelatedTopics": [
-            {
-                "Text": "Privacy Search Engine — DuckDuckGo offers private browsing.",
-                "FirstURL": "https://duckduckgo.com/privacy",
-            }
-        ],
-    }
+    mock_ddgs = MagicMock()
+    mock_ddgs.__enter__ = MagicMock(return_value=mock_ddgs)
+    mock_ddgs.__exit__ = MagicMock(return_value=False)
+    mock_ddgs.text = MagicMock(return_value=_FAKE_RESULTS)
 
-    with respx.mock:
-        respx.get("https://api.duckduckgo.com/").mock(
-            return_value=httpx.Response(200, json=mock_payload)
-        )
-        results = await web_search("DuckDuckGo", max_results=4)
+    with patch("app.tools.search.DDGS", return_value=mock_ddgs):
+        results = await web_search("LangGraph", max_results=4)
 
     assert isinstance(results, list)
-    assert len(results) >= 1
-    assert "title" in results[0]
-    assert "url" in results[0]
-    assert "snippet" in results[0]
+    assert len(results) == 2
+    assert results[0]["title"] == "LangGraph overview"
+    assert results[0]["url"] == "https://example.com/langgraph"
+    assert "LangGraph" in results[0]["snippet"]
 
 
 @pytest.mark.asyncio
 async def test_web_search_returns_empty_on_error():
-    with respx.mock:
-        respx.get("https://api.duckduckgo.com/").mock(return_value=httpx.Response(500))
+    mock_ddgs = MagicMock()
+    mock_ddgs.__enter__ = MagicMock(side_effect=Exception("network error"))
+    mock_ddgs.__exit__ = MagicMock(return_value=False)
+
+    with patch("app.tools.search.DDGS", return_value=mock_ddgs):
         results = await web_search("anything", max_results=4)
 
     assert results == []
