@@ -13,8 +13,16 @@ from app.tools.search import web_search
 
 _FAKE_TAVILY_RESPONSE = {
     "results": [
-        {"title": "LangGraph overview", "url": "https://example.com/langgraph", "content": "LangGraph is a library for building stateful agents."},
-        {"title": "Agent frameworks", "url": "https://example.com/agents", "content": "Multi-agent frameworks enable complex task decomposition."},
+        {
+            "title": "LangGraph overview",
+            "url": "https://example.com/langgraph",
+            "content": "LangGraph is a library for building stateful agents.",
+        },
+        {
+            "title": "Agent frameworks",
+            "url": "https://example.com/agents",
+            "content": "Multi-agent frameworks enable complex task decomposition.",
+        },
     ]
 }
 
