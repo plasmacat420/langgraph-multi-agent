@@ -1,10 +1,8 @@
 services:
   - type: web
     name: langgraph-multi-agent-api
-    runtime: python
-    rootDir: backend
-    buildCommand: pip install -e "."
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     envVars:
       - key: GROQ_API_KEY
         sync: false
